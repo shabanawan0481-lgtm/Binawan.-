@@ -1,0 +1,20 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Message templates</h1>
+<p>Edit every email and WhatsApp message your store sends. Use these placeholders and they are filled in automatically:</p>
+<p class="vars">{% for v in vars %}<code>{{ '{' ~ v ~ '}' }}</code> {% endfor %}</p>
+{% for t in items %}
+<details class="panel tpl" id="{{ t.key }}">
+  <summary><b>{{ t.label }}</b>{% if t.custom %} <em class="badge">edited</em>{% endif %}</summary>
+  <form method="post" action="{{ url_for('admin_template_save', key=t.key) }}" class="form flat">
+    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+    {% if t.is_email %}<label>Subject <input name="subject" value="{{ t.subject }}"></label>{% else %}<input type="hidden" name="subject" value="">{% endif %}
+    <label>{{ 'Message' if not t.is_email else 'Message (leave a blank line between paragraphs)' }}<textarea name="body" rows="{{ 9 if t.is_email else 4 }}">{{ t.body }}</textarea></label>
+    <button class="btn" name="action" value="save">Save</button>
+    {% if t.is_email %}<button class="btn ghost" name="action" value="preview">Save and email me a preview</button>{% endif %}
+    {% if t.custom %}<button class="link danger" name="action" value="reset">Reset to default</button>{% endif %}
+  </form>
+</details>
+{% endfor %}
+<p class="muted">Emails automatically include your logo, the order details and a button. The tracking ID and courier are added to the shipped email for you.</p>
+{% endblock %}

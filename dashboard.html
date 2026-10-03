@@ -1,0 +1,28 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="stats">
+  <div><span>Sales (not cancelled)</span><b>{{ stats.revenue|money }}</b></div>
+  <div><span>Orders today</span><b>{{ stats.today }}</b></div>
+  <div><span>Pending orders</span><b>{{ stats.pending }}</b></div>
+  <div><span>Customers</span><b>{{ stats.customers }}</b></div>
+  <div><span>Live chats waiting</span><b>{{ stats.chats }}</b></div>
+  <div><span>Unread messages</span><b>{{ stats.messages }}</b></div>
+</div>
+<div class="two">
+  <div class="panel"><h2>Sales, last 7 days</h2>
+    <div class="bars">{% for d in days %}<div title="{{ d.total|money }}, {{ d.n }} orders"><i style="height:{{ [d.pct, 3]|max }}%"></i><span>{{ d.label }}</span></div>{% endfor %}</div>
+  </div>
+  <div class="panel"><h2>New customers</h2>
+    {% for c in newc %}<p class="row2"><b>{{ c.name }}</b><span>{{ c.email }}</span></p>{% else %}<p class="muted">No customer accounts yet.</p>{% endfor %}
+    <a href="{{ url_for('admin_customers') }}">See all customers</a>
+  </div>
+</div>
+<h2>Recent orders</h2>
+<table><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>
+{% for o in recent %}<tr><td>{{ o.code }}</td><td>{{ o.name }}<br><small>{{ o.phone }}</small></td><td>{{ o.total|money }}</td>
+<td><span class="pill {{ o.status }}">{{ o.status }}</span></td><td><a href="{{ url_for('admin_order', oid=o.id) }}">Open</a></td></tr>
+{% else %}<tr><td colspan="5">No orders yet.</td></tr>{% endfor %}</tbody></table>
+{% if low %}<h2>Low stock</h2><table><tbody>
+{% for p in low %}<tr><td>{{ p.name }}</td><td>{{ p.stock }} left</td><td><a href="{{ url_for('admin_product_edit', pid=p.id) }}">Edit</a></td></tr>{% endfor %}</tbody></table>{% endif %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}New password | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block auth">
+  <h1 class="page-title">Choose a new password</h1>
+  <form method="post" class="co-form">
+    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+    <label>New password (8+ characters) <input type="password" name="password" required autocomplete="new-password"></label>
+    <button class="btn gold wide" type="submit">Save password</button>
+  </form>
+</section>
+{% endblock %}

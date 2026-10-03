@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}{{ current.name if current else 'All perfumes' }} | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block">
+  <h1 class="page-title">{{ current.name if current else 'All perfumes' }}</h1>
+  <form class="filters" method="get">
+    {% if current %}<input type="hidden" name="cat" value="{{ current.slug }}">{% endif %}
+    <input type="search" name="q" value="{{ q }}" placeholder="Search perfumes" aria-label="Search perfumes">
+    <select name="sort" aria-label="Sort by" onchange="this.form.submit()">
+      <option value="new" {{ 'selected' if sort=='new' }}>Newest</option>
+      <option value="low" {{ 'selected' if sort=='low' }}>Price, low to high</option>
+      <option value="high" {{ 'selected' if sort=='high' }}>Price, high to low</option>
+    </select>
+    <button class="btn small" type="submit">Search</button>
+  </form>
+  <div class="chips">
+    <a href="{{ url_for('shop') }}" class="{{ '' if current else 'on' }}">All</a>
+    {% for c in nav_categories %}<a href="{{ url_for('shop', cat=c.slug) }}" class="{{ 'on' if current and current.id==c.id }}">{{ c.name }}</a>{% endfor %}
+  </div>
+  {% if products %}<div class="grid">{% for p in products %}{% include '_card.html' %}{% endfor %}</div>
+  {% else %}<p class="empty">No perfumes found. Try another search or collection.</p>{% endif %}
+</section>
+{% endblock %}

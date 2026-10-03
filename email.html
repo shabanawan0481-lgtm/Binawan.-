@@ -1,0 +1,22 @@
+<!doctype html>
+<html><body style="margin:0;background:#f2f1ee;font-family:Arial,Helvetica,sans-serif;color:#1c2024">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f1ee;padding:24px 10px"><tr><td align="center">
+<table role="presentation" width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;background:#ffffff;border-radius:10px;overflow:hidden;border:1px solid #e6e3dc">
+<tr><td align="center" style="padding:26px 28px 18px;border-bottom:3px solid {{ colors.accent }}">
+{% if logo_url %}<img src="{{ logo_url }}" alt="{{ S.site_name }}" height="54" style="height:54px;max-width:240px;display:block;margin:0 auto">{% else %}<span style="font-family:Georgia,serif;font-size:28px;font-weight:bold;color:{{ colors.primary }}">{{ S.site_name }}</span>{% endif %}
+</td></tr>
+<tr><td style="padding:30px 32px 10px">
+<h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;font-family:Georgia,serif;color:{{ colors.primary }}">{{ title }}</h1>
+{% for p in paragraphs %}<p style="margin:0 0 14px;line-height:1.65;font-size:15px;color:#2b3036">{{ p|nl2br }}</p>{% endfor %}
+</td></tr>
+{% if details %}<tr><td style="padding:6px 32px"><table role="presentation" width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;border:1px solid #ece9e2;border-radius:6px">
+{% for k, v in details %}{% if v %}<tr><td style="color:#6a7077;width:38%;border-bottom:1px solid #f0ede7">{{ k }}</td><td style="border-bottom:1px solid #f0ede7"><b>{{ v }}</b></td></tr>{% endif %}{% endfor %}</table></td></tr>{% endif %}
+{% if rows %}<tr><td style="padding:14px 32px 0"><table role="presentation" width="100%" cellpadding="7" cellspacing="0" style="font-size:14px">
+{% for k, v in rows %}<tr><td style="border-bottom:1px solid #f0ede7;{{ 'font-weight:bold;' if loop.last }}">{{ k }}</td><td align="right" style="border-bottom:1px solid #f0ede7;{{ 'font-weight:bold;' if loop.last }}">{{ v }}</td></tr>{% endfor %}</table></td></tr>{% endif %}
+{% if links %}<tr><td style="padding:24px 32px 8px">{% for t, u in links %}<a href="{{ u }}" style="display:inline-block;margin:0 8px 10px 0;padding:12px 22px;border-radius:6px;font-weight:bold;font-size:14px;text-decoration:none;{% if loop.first %}background:{{ colors.accent }};color:{{ colors.primary }}{% else %}border:1px solid {{ colors.primary }};color:{{ colors.primary }}{% endif %}">{{ t }}</a>{% endfor %}</td></tr>{% endif %}
+<tr><td style="padding:22px 32px 26px;font-size:12px;line-height:1.6;color:#7a8087;border-top:1px solid #f0ede7;margin-top:14px">
+<b style="color:#2b3036">{{ S.site_name }}</b>{% if S.address %} &middot; {{ S.address }}{% endif %}<br>
+{% if S.phone %}Phone / WhatsApp: {{ S.phone }}<br>{% endif %}
+{% if S.facebook %}<a href="{{ S.facebook }}" style="color:#7a8087">Facebook</a> &nbsp; {% endif %}{% if S.instagram %}<a href="{{ S.instagram }}" style="color:#7a8087">Instagram</a> &nbsp; {% endif %}{% if S.tiktok %}<a href="{{ S.tiktok }}" style="color:#7a8087">TikTok</a>{% endif %}
+</td></tr>
+</table></td></tr></table></body></html>

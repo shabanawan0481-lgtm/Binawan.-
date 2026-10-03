@@ -1,0 +1,6 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Notification log</h1>
+<p>Latest emails and WhatsApp messages the store tried to send. If something shows FAILED, fix the Settings and use the test buttons.</p>
+<div class="panel"><pre style="white-space:pre-wrap;margin:0;font-size:.85rem">{% for l in lines %}{{ l }}{% else %}Nothing sent yet.{% endfor %}</pre></div>
+{% endblock %}

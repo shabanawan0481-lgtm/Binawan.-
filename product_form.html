@@ -1,0 +1,50 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>{{ 'Edit product' if p else 'Add product' }}</h1>
+<form method="post" enctype="multipart/form-data" class="form">
+  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+  <label>Name <input name="name" value="{{ p.name if p else '' }}" required></label>
+  <label>Category <select name="category_id"><option value="0">None</option>
+    {% for c in cats %}<option value="{{ c.id }}" {{ 'selected' if p and p.category_id==c.id }}>{{ c.name }}</option>{% endfor %}</select></label>
+  <div class="row">
+    <label>Price (Rs) <input type="number" name="price" min="1" value="{{ p.price if p else '' }}" required></label>
+    <label>Old price (Rs, optional) <input type="number" name="compare_price" min="0" value="{{ p.compare_price if p else 0 }}"></label>
+    <label>Stock <input type="number" name="stock" min="0" value="{{ p.stock if p else 100 }}"></label>
+  </div>
+  <label>Size (e.g. 100 ml) <input name="size" value="{{ p.size if p else '' }}"></label>
+  <label>Description <textarea name="description" rows="4">{{ p.description if p else '' }}</textarea></label>
+  <label>Fragrance notes <textarea name="notes" rows="2">{{ p.notes if p else '' }}</textarea></label>
+  <div class="row">
+    <label>Scent tags (comma separated: fresh, sweet, woody, floral, oud, musky, citrus, day, night) <input name="tags" value="{{ p.tags if p else '' }}"></label>
+    <label>Longevity (1 to 5) <input type="number" name="longevity" min="1" max="5" value="{{ p.longevity if p else 4 }}"></label>
+    <label>Projection (1 to 5) <input type="number" name="sillage" min="1" max="5" value="{{ p.sillage if p else 3 }}"></label>
+  </div>
+  <fieldset><legend>Photos</legend>
+    <label>Add photos (select several at once) <input type="file" name="images" accept="image/*" multiple id="imgs"></label>
+    <label>Or paste photo links (one per line) <textarea name="image_urls" rows="2" placeholder="https://..."></textarea></label>
+    <div id="preview" class="imgs"></div>
+    {% if images %}
+    <p><small>Choose which photo shows first, or tick Delete to remove a photo.</small></p>
+    <div class="imgs">
+      {% for im in images %}
+      <div class="imgbox">
+        <img src="{{ im.filename|img }}" alt="">
+        <label class="check"><input type="radio" name="primary" value="{{ im.id }}" {{ 'checked' if loop.first }}> Main photo</label>
+        <label class="check"><input type="checkbox" name="del_img_{{ im.id }}"> Delete</label>
+      </div>{% endfor %}
+    </div>{% endif %}
+  </fieldset>
+  <label class="check"><input type="checkbox" name="featured" {{ 'checked' if (not p) or p.featured }}> Show on homepage best sellers</label>
+  <label class="check"><input type="checkbox" name="active" {{ 'checked' if (not p) or p.active }}> Visible in store</label>
+  <button class="btn">Save product</button> <a href="{{ url_for('admin_products') }}">Cancel</a>
+</form>
+<script>
+document.getElementById('imgs').addEventListener('change', function (e) {
+  var box = document.getElementById('preview'); box.innerHTML = '';
+  Array.prototype.forEach.call(e.target.files, function (f) {
+    var d = document.createElement('div'); d.className = 'imgbox';
+    var i = document.createElement('img'); i.src = URL.createObjectURL(f); d.appendChild(i); box.appendChild(d);
+  });
+});
+</script>
+{% endblock %}

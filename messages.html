@@ -1,0 +1,11 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Messages</h1>
+{% for m in rows %}<div class="panel {{ '' if m.is_read else 'unread' }}">
+<p><b>{{ m.name }}</b> {{ m.email }} {{ m.phone }}<br><small>{{ m.created_at[:16]|replace('T',' ') }}</small></p>
+<p>{{ m.message }}</p>
+<form method="post" class="inline"><input type="hidden" name="_csrf" value="{{ csrf() }}"><input type="hidden" name="id" value="{{ m.id }}">
+{% if not m.is_read %}<button class="link" name="action" value="read">Mark as read</button>{% endif %}
+<button class="link danger" name="action" value="delete">Delete</button></form></div>
+{% else %}<p>No messages yet.</p>{% endfor %}
+{% endblock %}

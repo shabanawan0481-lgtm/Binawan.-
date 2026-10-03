@@ -1,0 +1,9 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="head"><h1>Pages</h1><a class="btn" href="{{ url_for('admin_page_edit') }}">Add page</a></div>
+<p>Founder, owners, about, FAQs and policies live here. Pages marked for the menu appear in the top navigation.</p>
+<table><thead><tr><th>Title</th><th>Address</th><th>Menu</th><th>Status</th><th></th></tr></thead><tbody>
+{% for g in rows %}<tr><td>{{ g.title }}</td><td>/p/{{ g.slug }}</td><td>{{ 'Yes' if g.show_in_menu else 'No' }}</td><td>{{ 'Live' if g.active else 'Hidden' }}</td>
+<td><a href="{{ url_for('admin_page_edit', gid=g.id) }}">Edit</a>
+<form class="inline" method="post" action="{{ url_for('admin_page_delete', gid=g.id) }}" onsubmit="return confirm('Delete {{ g.title|e }}?')"><input type="hidden" name="_csrf" value="{{ csrf() }}"><button class="link danger">Delete</button></form></td></tr>{% endfor %}</tbody></table>
+{% endblock %}

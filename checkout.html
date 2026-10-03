@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Checkout | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block checkout">
+  <form method="post" enctype="multipart/form-data" class="co-form">
+    <h1 class="page-title">Checkout</h1>
+    {% if errors %}<div class="flash err"><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>{% endif %}
+    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+    <label>Full name <input name="name" value="{{ form.get('name','') }}" required autocomplete="name"></label>
+    <label>Phone number <input name="phone" value="{{ form.get('phone','') }}" required inputmode="tel" autocomplete="tel" placeholder="03xx xxxxxxx"></label>
+    <label>Email (optional, for order updates) <input type="email" name="email" value="{{ form.get('email','') }}" autocomplete="email"></label>
+    <label>City <input name="city" value="{{ form.get('city','') }}" required autocomplete="address-level2"></label>
+    <label>Full delivery address <textarea name="address" rows="3" required>{{ form.get('address','') }}</textarea></label>
+    <label>Order note (optional) <input name="note" value="{{ form.get('note','') }}"></label>
+
+    <fieldset class="pay">
+      <legend>Payment method</legend>
+      {% for key, label, hint in methods %}
+      <label class="opt"><input type="radio" name="payment_method" value="{{ key }}" {{ 'checked' if form.get('payment_method', methods[0][0]) == key }} data-pay>
+        <span><b>{{ label }}</b><small>{{ hint }}</small></span></label>
+      {% endfor %}
+      <div class="pay-box" data-box="bank" hidden>
+        <p><b>{{ S.bank_name }}</b><br>Account number: <b>{{ S.bank_account_no }}</b><br>Account name: <b>{{ S.bank_account_title }}</b></p>
+      </div>
+      <div class="pay-box" data-box="jazzcash" hidden>
+        <p><b>JazzCash</b><br>Mobile number: <b>{{ S.jazz_number }}</b><br>Account name: <b>{{ S.jazz_title }}</b></p>
+      </div>
+      <div class="pay-box proof" data-box="bank jazzcash" hidden>
+        <p>{{ S.payment_note }}</p>
+        <label>Payment screenshot (required) <input type="file" name="proof" accept="image/*,.pdf"></label>
+      </div>
+    </fieldset>
+    <button class="btn gold wide" type="submit">Place order</button>
+  </form>
+  <aside class="co-sum">
+    <h2>Order summary</h2>
+    {% for l in lines %}<p><span>{{ l.p.name }} x {{ l.qty }}</span><b>{{ l.total|money }}</b></p>{% endfor %}
+    <p><span>Delivery</span><b>{{ 'Free' if delivery == 0 else delivery|money }}</b></p>
+    <p class="grand"><span>Total</span><b>{{ total|money }}</b></p>
+    <a href="{{ url_for('cart') }}">Edit cart</a>
+  </aside>
+</section>
+{% endblock %}

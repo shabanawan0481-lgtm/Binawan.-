@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Forgot password | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block auth">
+  <h1 class="page-title">Reset your password</h1>
+  {% if sent %}<div class="flash ok">If an account exists for that email, we sent a link to reset the password. Check your inbox and spam folder.</div>
+  {% else %}
+  <form method="post" class="co-form">
+    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+    <label>Your account email <input type="email" name="email" required></label>
+    <button class="btn gold wide" type="submit">Send reset link</button>
+  </form>{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>{{ 'Edit page' if pg else 'Add page' }}</h1>
+<form method="post" enctype="multipart/form-data" class="form">
+  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+  <label>Title <input name="title" value="{{ pg.title if pg else '' }}" required></label>
+  <label>Content (HTML allowed: &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;a&gt;)<textarea name="content" rows="14">{{ pg.content if pg else '' }}</textarea></label>
+  <label>Photo (for example founder photo) <input type="file" name="image" accept="image/*"></label>
+  {% if pg and pg.image %}<img class="thumb" src="{{ pg.image|img }}" alt="">{% endif %}
+  <label>Menu order (smaller shows first) <input type="number" name="position" value="{{ pg.position if pg else 50 }}"></label>
+  <label class="check"><input type="checkbox" name="show_in_menu" {{ 'checked' if (not pg) or pg.show_in_menu }}> Show in top menu</label>
+  <label class="check"><input type="checkbox" name="active" {{ 'checked' if (not pg) or pg.active }}> Page is live</label>
+  <button class="btn">Save page</button> <a href="{{ url_for('admin_pages') }}">Cancel</a>
+</form>
+{% endblock %}

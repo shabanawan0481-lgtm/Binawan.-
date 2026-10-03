@@ -1,0 +1,14 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Bulk import products</h1>
+<p>Paste one product per line in this format. Only the name and price are required.</p>
+<pre class="code">Name | Price | Category | Image link | Old price
+Oud Royal | 3999 | Men Perfumes | https://www.binawanpk.com/images/oud-royal.jpg | 5499
+Rose Elixir | 3499 | Women Perfumes</pre>
+<form method="post" class="form">
+  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+  <label>Products <textarea name="lines" rows="14" placeholder="Name | Price | Category | Image link | Old price" required></textarea></label>
+  <button class="btn">Import products</button>
+</form>
+<p class="muted">Categories that do not exist are created. Image links are used as they are. Before you point www.binawanpk.com to the new store, download those photos and upload them on each product, because the old site's images disappear when the old site is replaced.</p>
+{% endblock %}

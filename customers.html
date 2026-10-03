@@ -1,0 +1,8 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Customers</h1>
+<form class="bar" method="get"><input name="q" value="{{ q }}" placeholder="Search name, email, phone"><button class="btn">Search</button></form>
+<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Spent</th><th>Joined</th></tr></thead><tbody>
+{% for c in rows %}<tr><td>{{ c.name }}</td><td>{{ c.email }}</td><td>{{ c.phone }}</td><td>{{ c.n_orders }}</td><td>{{ c.spent|money }}</td><td>{{ c.created_at[:10] }}</td></tr>
+{% else %}<tr><td colspan="6">No customers yet. They appear here when someone creates an account on the store.</td></tr>{% endfor %}</tbody></table>
+{% endblock %}

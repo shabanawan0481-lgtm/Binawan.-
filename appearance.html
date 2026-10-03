@@ -1,0 +1,43 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Colors &amp; fonts</h1>
+<div class="two">
+<form method="post" enctype="multipart/form-data" class="form" id="appr">
+  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+  <fieldset><legend>Ready-made color themes</legend>
+    <div class="presets">{% for n, p, a, b in presets %}<button type="button" class="preset" data-p="{{ p }}" data-a="{{ a }}" data-b="{{ b }}"><i style="background:{{ p }}"></i><i style="background:{{ a }}"></i><i style="background:{{ b }}"></i><span>{{ n }}</span></button>{% endfor %}</div>
+  </fieldset>
+  <fieldset><legend>Your own colors</legend>
+    <div class="row">
+      <label>Main color (header, buttons) <input type="color" name="color_primary" value="{{ colors.primary }}"></label>
+      <label>Accent color (highlights) <input type="color" name="color_accent" value="{{ colors.accent }}"></label>
+      <label>Page background <input type="color" name="color_bg" value="{{ colors.bg }}"></label>
+    </div>
+  </fieldset>
+  <fieldset><legend>Fonts</legend>
+    <label>Font style <select name="font_pair">{% for k, f in fonts.items() %}<option value="{{ k }}" {{ 'selected' if S.font_pair==k }}>{{ f.label }}</option>{% endfor %}</select></label>
+    <label>Header style <select name="header_style"><option value="dark" {{ 'selected' if S.header_style=='dark' }}>Dark header (best for white logos)</option><option value="light" {{ 'selected' if S.header_style=='light' }}>Light header (best for dark logos)</option></select></label>
+  </fieldset>
+  <fieldset><legend>Logo and homepage image</legend>
+    <label>Logo: upload <input type="file" name="logo" accept="image/*"></label>
+    <label>or paste a logo link <input name="logo_url" placeholder="https://..."></label>
+    {% if S.logo %}<img class="thumb" src="{{ S.logo|img }}" alt=""><label class="check"><input type="checkbox" name="logo_remove"> Remove logo</label>{% endif %}
+    <label>Homepage photo (optional, replaces the bottles picture): upload <input type="file" name="hero_image" accept="image/*"></label>
+    <label>or paste an image link <input name="hero_image_url" placeholder="https://..."></label>
+    {% if S.hero_image %}<img class="thumb" src="{{ S.hero_image|img }}" alt=""><label class="check"><input type="checkbox" name="hero_image_remove"> Remove homepage photo</label>{% endif %}
+  </fieldset>
+  <button class="btn">Save appearance</button>
+</form>
+<div class="panel"><h2>Live preview</h2>
+  <div class="mock" id="mock"><div class="mh"><b>{{ S.site_name }}</b><span>Shop &nbsp; Track order</span></div>
+    <div class="mb"><h3>Scents that stay</h3><p>Long-lasting luxury fragrances.</p><span class="mbtn">Shop perfumes</span></div></div>
+  <p class="muted">The preview updates as you pick colors. Press Save to apply them to your store and admin panel.</p>
+</div>
+</div>
+<script>
+(function(){var f=document.getElementById('appr'),m=document.getElementById('mock');
+function paint(){m.style.setProperty('--p',f.color_primary.value);m.style.setProperty('--a',f.color_accent.value);m.style.setProperty('--b',f.color_bg.value);}
+f.addEventListener('input',paint);paint();
+document.querySelectorAll('.preset').forEach(function(b){b.addEventListener('click',function(){f.color_primary.value=b.dataset.p;f.color_accent.value=b.dataset.a;f.color_bg.value=b.dataset.b;paint();});});})();
+</script>
+{% endblock %}

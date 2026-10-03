@@ -1,0 +1,19 @@
+<article class="card">
+  <a class="card-img" href="{{ url_for('product', slug=p.slug) }}" style="--liquid:hsl({{ (p.id * 47) % 50 + 20 }},65%,48%)">
+    {% if p.image %}<img class="i1" src="{{ p.image|img }}" alt="{{ p.name }}" loading="lazy">
+      {% if p.image2 %}<img class="i2" src="{{ p.image2|img }}" alt="" loading="lazy">{% endif %}
+    {% else %}{% include '_bottle.html' %}{% endif %}
+    {% if p.compare_price and p.compare_price > p.price %}<span class="tag">Save {{ ((p.compare_price - p.price) * 100 // p.compare_price) }}%</span>{% endif %}
+    {% if p.stock <= 0 %}<span class="tag soldout">Sold out</span>{% endif %}
+  </a>
+  <div class="card-body">
+    <h3><a href="{{ url_for('product', slug=p.slug) }}">{{ p.name }}</a></h3>
+    <p class="price">{{ p.price|money }}{% if p.compare_price and p.compare_price > p.price %} <s>{{ p.compare_price|money }}</s>{% endif %}</p>
+    {% if p.stock > 0 %}
+    <form method="post" action="{{ url_for('cart_add') }}">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}"><input type="hidden" name="product_id" value="{{ p.id }}">
+      <input type="hidden" name="next" value="{{ request.full_path }}">
+      <button class="btn small" type="submit">Add to cart</button>
+    </form>{% endif %}
+  </div>
+</article>

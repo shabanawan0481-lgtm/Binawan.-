@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Order placed | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block narrow">
+  <h1 class="page-title">Thank you, {{ order.name }}</h1>
+  <div class="flash ok">Your order <b>{{ order.code }}</b> has been placed. We will call you shortly to confirm delivery.{% if order.email %} A confirmation email is on its way to {{ order.email }}.{% endif %}</div>
+  <p class="muted">Save your order number. You can track the order with it and your phone number.</p>
+  <table class="table">
+    {% for it in items %}<tr><td>{{ it.name }} x {{ it.qty }}</td><td>{{ (it.price * it.qty)|money }}</td></tr>{% endfor %}
+    <tr><td>Delivery</td><td>{{ 'Free' if order.delivery == 0 else order.delivery|money }}</td></tr>
+    <tr><td><b>Total</b></td><td><b>{{ order.total|money }}</b></td></tr>
+  </table>
+  {% if order.payment_method != 'cod' %}
+  <div class="pay-box"><p>We received your payment screenshot and will verify it before dispatch.</p></div>
+  {% else %}<p>Payment: Cash on Delivery.</p>{% endif %}
+  <div class="actions">
+    {% if wa %}<a class="btn wa-btn" href="{{ wa }}" target="_blank" rel="noopener">Send this order on WhatsApp</a>{% endif %}
+    <a class="btn gold" href="{{ url_for('track') }}?code={{ order.code }}">Track this order</a>
+    <a class="btn ghost-dark" href="{{ url_for('shop') }}">Continue shopping</a>
+  </div>
+</section>
+{% endblock %}

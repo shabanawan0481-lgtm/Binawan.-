@@ -1,0 +1,10 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Categories</h1>
+<form method="post" enctype="multipart/form-data" class="bar"><input type="hidden" name="_csrf" value="{{ csrf() }}">
+<input name="name" placeholder="New category name" required><input type="file" name="image" accept="image/*"><button class="btn">Add category</button></form>
+<table><thead><tr><th>Image</th><th>Name</th><th>Products</th><th></th></tr></thead><tbody>
+{% for c in rows %}<tr><td>{% if c.image %}<img class="thumb" src="{{ c.image|img }}" alt="">{% else %}-{% endif %}</td><td>{{ c.name }}</td><td>{{ c.n }}</td><td>
+<form class="inline" method="post" enctype="multipart/form-data" action="{{ url_for('admin_category_image', cid=c.id) }}"><input type="hidden" name="_csrf" value="{{ csrf() }}"><input type="file" name="image" accept="image/*" required style="width:auto"><button class="link">Change image</button></form>
+<form class="inline" method="post" action="{{ url_for('admin_category_delete', cid=c.id) }}" onsubmit="return confirm('Delete {{ c.name|e }}? Its products stay in the store without a category.')"><input type="hidden" name="_csrf" value="{{ csrf() }}"><button class="link danger">Delete</button></form></td></tr>{% endfor %}</tbody></table>
+{% endblock %}

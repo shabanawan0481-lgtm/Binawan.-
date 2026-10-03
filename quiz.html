@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Find your scent | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block narrow">
+  <h1 class="page-title">Find your perfect scent</h1>
+  <p class="muted">Answer three quick questions and we will pick perfumes that suit you.</p>
+  <form method="get" class="quiz">
+    <fieldset><legend>1. Who is it for?</legend>
+      {% for v, l in [('men','For him'),('women','For her'),('any','Anyone / gift')] %}<label class="pick"><input type="radio" name="for" value="{{ v }}" {{ 'checked' if who==v }}><span>{{ l }}</span></label>{% endfor %}
+    </fieldset>
+    <fieldset><legend>2. Which scent do you love?</legend>
+      {% for f in families %}<label class="pick"><input type="radio" name="family" value="{{ f }}" {{ 'checked' if family==f }}><span>{{ f|capitalize }}</span></label>{% endfor %}
+    </fieldset>
+    <fieldset><legend>3. When will you wear it?</legend>
+      {% for v, l in [('day','Daytime, office, daily'),('night','Evenings, parties, events')] %}<label class="pick"><input type="radio" name="time" value="{{ v }}" {{ 'checked' if time_==v }}><span>{{ l }}</span></label>{% endfor %}
+    </fieldset>
+    <button class="btn gold big" type="submit">Show my perfumes</button>
+  </form>
+</section>
+{% if asked %}
+<section class="wrap block">
+  <h2>{{ 'Your matches' if results else 'No exact match yet' }}</h2>
+  {% if results %}<div class="grid">{% for p in results %}{% include '_card.html' %}{% endfor %}</div>
+  {% else %}<p class="empty">We could not find a close match. Try different answers, or <a href="{{ url_for('shop') }}">browse all perfumes</a>. You can also ask our chat assistant.</p>{% endif %}
+</section>{% endif %}
+{% endblock %}

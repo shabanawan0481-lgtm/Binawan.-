@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Track your order | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block narrow">
+  <h1 class="page-title">Track your order</h1>
+  <form method="post" class="co-form">
+    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+    <label>Order number <input name="code" value="{{ code }}" placeholder="BA123456" required></label>
+    <label>Phone number used on the order <input name="phone" inputmode="tel" required></label>
+    {% if error %}<div class="flash err">{{ error }}</div>{% endif %}
+    <button class="btn gold" type="submit">Track order</button>
+  </form>
+  {% if order %}
+  <div class="trackbox">
+    <h2>Order {{ order.code }}</h2>
+    {% if order.status == 'cancelled' %}<p class="flash err">This order was cancelled.</p>
+    {% else %}
+    <ol class="steps">
+      {% set order_flow = ['pending','confirmed','shipped','delivered'] %}
+      {% set idx = order_flow.index(order.status) %}
+      {% for s in order_flow %}<li class="{{ 'done' if loop.index0 <= idx }}">{{ {'pending':'Order placed','confirmed':'Confirmed','shipped':'Shipped','delivered':'Delivered'}[s] }}</li>{% endfor %}
+    </ol>{% endif %}
+    <table class="table">
+      {% for it in items %}<tr><td>{{ it.name }} x {{ it.qty }}</td><td>{{ (it.price * it.qty)|money }}</td></tr>{% endfor %}
+      <tr><td>Total</td><td><b>{{ order.total|money }}</b></td></tr>
+      <tr><td>Payment</td><td>{{ {'cod':'Cash on Delivery','bank':'Bank transfer','jazzcash':'JazzCash'}[order.payment_method] }} ({{ order.payment_status }})</td></tr>
+      <tr><td>Delivering to</td><td>{{ order.city }}</td></tr>
+    </table>
+    {% if order.tracking_id %}
+    <div class="courier">
+      <h3>Courier tracking</h3>
+      <p>Courier: <b>{{ order.courier or 'Courier' }}</b></p>
+      <p>Tracking ID: <b id="tid">{{ order.tracking_id }}</b> <button type="button" class="link" data-copy="#tid">Copy</button></p>
+      {% if courier_url %}<a class="btn gold" href="{{ courier_url }}" target="_blank" rel="noopener">Track on {{ order.courier or 'courier' }} website</a>{% endif %}
+    </div>
+    {% elif order.status in ['pending','confirmed'] %}<p class="muted">The courier tracking ID will appear here and be emailed to you as soon as your parcel ships.</p>{% endif %}
+  </div>{% endif %}
+</section>
+{% endblock %}

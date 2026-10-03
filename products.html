@@ -1,0 +1,10 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="head"><h1>Products</h1><a class="btn" href="{{ url_for('admin_product_edit') }}">Add product</a></div>
+<table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr></thead><tbody>
+{% for p in rows %}<tr><td>{{ p.name }}</td><td>{{ p.cat_name or '-' }}</td><td>{{ p.price|money }}</td><td>{{ p.stock }}</td>
+<td>{{ 'Active' if p.active else 'Hidden' }}{{ ', featured' if p.featured }}</td>
+<td><a href="{{ url_for('admin_product_edit', pid=p.id) }}">Edit</a>
+<form class="inline" method="post" action="{{ url_for('admin_product_delete', pid=p.id) }}" onsubmit="return confirm('Delete {{ p.name|e }}?')"><input type="hidden" name="_csrf" value="{{ csrf() }}"><button class="link danger">Delete</button></form></td></tr>
+{% else %}<tr><td colspan="6">No products yet.</td></tr>{% endfor %}</tbody></table>
+{% endblock %}

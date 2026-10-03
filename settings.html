@@ -1,0 +1,29 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Settings</h1>
+<form method="post" enctype="multipart/form-data" class="form">
+  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+  {% for title, fields in groups %}
+  <fieldset><legend>{{ title }}</legend>
+    {% for key, label, kind in fields %}
+      {% if kind == 'check' %}<label class="check"><input type="checkbox" name="{{ key }}" {{ 'checked' if S[key]=='1' }}> {{ label }}</label>
+      {% elif kind == 'textarea' %}<label>{{ label }}<textarea name="{{ key }}" rows="3">{{ S[key] }}</textarea></label>
+      {% elif kind == 'file' %}<label>{{ label }}<input type="file" name="{{ key }}" accept="image/*"></label>
+        {% if S[key] %}<img class="thumb" src="{{ S[key]|img }}" alt=""><label class="check"><input type="checkbox" name="{{ key }}_remove"> Remove current image</label>{% endif %}
+      {% elif kind == 'password' %}<label>{{ label }} <small>(leave empty to keep current)</small><input type="password" name="{{ key }}" autocomplete="new-password"></label>
+      {% else %}<label>{{ label }}<input type="{{ 'number' if kind=='number' else 'text' }}" name="{{ key }}" value="{{ S[key] }}"></label>{% endif %}
+    {% endfor %}
+  </fieldset>
+  {% endfor %}
+  <button class="btn">Save settings</button>
+</form>
+<h2>Test your notifications</h2>
+<div class="two">
+  <form method="post" action="{{ url_for('admin_test_email') }}" class="panel"><input type="hidden" name="_csrf" value="{{ csrf() }}">
+    <p>Save settings first, then send a test email.</p>
+    <input name="to" placeholder="Send to (empty = your alert email)"><br><br><button class="btn">Send test email</button></form>
+  <form method="post" action="{{ url_for('admin_test_whatsapp') }}" class="panel"><input type="hidden" name="_csrf" value="{{ csrf() }}">
+    <p>Test the automatic WhatsApp connection.</p>
+    <input name="to" placeholder="Number, e.g. 923001234567 (empty = your number)"><br><br><button class="btn">Send test WhatsApp</button></form>
+</div>
+{% endblock %}

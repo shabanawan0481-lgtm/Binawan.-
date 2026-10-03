@@ -1,0 +1,37 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Order {{ o.code }}</h1>
+<div class="two">
+  <div class="panel">
+    <h2>Customer</h2>
+    <p><b>{{ o.name }}</b><br>{{ o.phone }}{% if o.email %}<br>{{ o.email }}{% endif %}<br>{{ o.city }}<br>{{ o.address }}</p>
+    {% if o.note %}<p><b>Note:</b> {{ o.note }}</p>{% endif %}
+    <h2>WhatsApp the customer</h2>
+    <p>{% for label, url in wa_links.items() %}<a class="btn wa" href="{{ url }}" target="_blank" rel="noopener">{{ label }}</a> {% endfor %}</p>
+    <h2>Items</h2>
+    <table>{% for it in items %}<tr><td>{{ it.name }} x {{ it.qty }}</td><td>{{ (it.price*it.qty)|money }}</td></tr>{% endfor %}
+    <tr><td>Delivery</td><td>{{ o.delivery|money }}</td></tr><tr><td><b>Total</b></td><td><b>{{ o.total|money }}</b></td></tr></table>
+  </div>
+  <div class="panel">
+    <h2>Payment</h2>
+    <p>Method: <b>{{ {'cod':'Cash on Delivery','bank':'Bank transfer','jazzcash':'JazzCash'}[o.payment_method] }}</b></p>
+    {% if o.payment_proof %}<p>Payment screenshot:</p>
+      {% if o.payment_proof.endswith('.pdf') %}<a href="{{ url_for('admin_proof', name=o.payment_proof) }}" target="_blank">Open PDF receipt</a>
+      {% else %}<a href="{{ url_for('admin_proof', name=o.payment_proof) }}" target="_blank"><img class="proof" src="{{ url_for('admin_proof', name=o.payment_proof) }}" alt="Payment proof"></a>{% endif %}{% endif %}
+    <h2>Update order</h2>
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      <label>Order status <select name="status">{% for s in ORDER_STATUSES %}<option value="{{ s }}" {{ 'selected' if s==o.status }}>{{ s|capitalize }}</option>{% endfor %}</select></label>
+      <label>Payment status <select name="payment_status"><option value="unpaid" {{ 'selected' if o.payment_status=='unpaid' }}>Unpaid</option><option value="paid" {{ 'selected' if o.payment_status=='paid' }}>Paid</option></select></label>
+      <h2>Courier tracking</h2>
+      <label>Courier <select name="courier"><option value="">Not shipped yet</option>
+        {% for c in couriers %}<option value="{{ c }}" {{ 'selected' if o.courier==c }}>{{ c }}</option>{% endfor %}</select></label>
+      <label>Tracking ID / CN number <input name="tracking_id" value="{{ o.tracking_id or '' }}" placeholder="Paste the courier tracking ID"></label>
+      <label>Tracking link (optional, overrides the courier's default page) <input name="tracking_url" value="{{ o.tracking_url or '' }}"></label>
+      <label class="check"><input type="checkbox" name="notify" checked> Email the customer about this change (status and tracking ID)</label>
+      <button class="btn">Save</button>
+    </form>
+    <p><small>Cancelling returns items to stock. The customer sees the courier and tracking ID on the Track order page.</small></p>
+  </div>
+</div>
+{% endblock %}

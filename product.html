@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{{ p.name }} | {{ S.site_name }}{% endblock %}
+{% block desc %}{{ (p.description or S.hero_text)[:150] }}{% endblock %}
+{% block content %}
+<section class="wrap block product">
+  <div class="gallery" style="--liquid:hsl({{ (p.id * 47) % 50 + 20 }},65%,48%)">
+    <div class="p-img">
+      {% if gallery %}<img id="mainimg" src="{{ gallery[0]|img }}" alt="{{ p.name }}">
+      {% else %}{% include '_bottle.html' %}{% endif %}
+    </div>
+    {% if gallery|length > 1 %}
+    <div class="thumbs">
+      {% for g in gallery %}<button type="button" class="{{ 'on' if loop.first }}" data-full="{{ g|img }}" aria-label="Photo {{ loop.index }}"><img src="{{ g|img }}" alt=""></button>{% endfor %}
+    </div>{% endif %}
+  </div>
+  <div class="p-info">
+    {% if p.cat_name %}<a class="crumb" href="{{ url_for('shop', cat=p.cat_slug) }}">{{ p.cat_name }}</a>{% endif %}
+    <h1>{{ p.name }}</h1>
+    <p class="price big">{{ p.price|money }}{% if p.compare_price and p.compare_price > p.price %} <s>{{ p.compare_price|money }}</s>{% endif %}</p>
+    {% if p.size %}<p class="muted">Size: {{ p.size }}</p>{% endif %}
+    <p class="muted">{{ 'In stock' if p.stock > 0 else 'Sold out' }}</p>
+    {% if p.stock > 0 %}
+    <form method="post" action="{{ url_for('cart_add') }}" class="buy">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}"><input type="hidden" name="product_id" value="{{ p.id }}">
+      <label>Quantity <input type="number" name="qty" value="1" min="1" max="{{ [p.stock,20]|min }}"></label>
+      <button class="btn" type="submit">Add to cart</button>
+      <button class="btn gold" type="submit" name="buy_now" value="1">Buy now</button>
+    </form>{% endif %}
+    {% if p.tags %}<p class="tagrow">{% for t in p.tags.split(',') %}<a href="{{ url_for('shop', q=t) }}">{{ t|capitalize }}</a>{% endfor %}</p>{% endif %}
+    <div class="meters">
+      <div><span>Longevity</span><i class="dots">{% for n in range(5) %}<b class="{{ 'on' if n < p.longevity }}"></b>{% endfor %}</i></div>
+      <div><span>Projection</span><i class="dots">{% for n in range(5) %}<b class="{{ 'on' if n < p.sillage }}"></b>{% endfor %}</i></div>
+    </div>
+    {% if wa_url %}<p><a class="btn wa-btn" href="{{ wa_url }}" target="_blank" rel="noopener">Ask about this on WhatsApp</a></p>{% endif %}
+    <ul class="perks"><li>Cash on delivery available</li><li>Delivery in 2 to 4 working days</li><li>Tell us within 24 hours if anything is wrong</li></ul>
+    {% if p.description %}<div class="prose"><h2>About this fragrance</h2><p>{{ p.description }}</p></div>{% endif %}
+    {% if p.notes %}<div class="prose"><h2>Notes</h2><p>{{ p.notes }}</p></div>{% endif %}
+  </div>
+</section>
+{% if related %}<section class="wrap block"><h2>You may also like</h2>
+<div class="grid">{% for p in related %}{% include '_card.html' %}{% endfor %}</div></section>{% endif %}
+{% endblock %}

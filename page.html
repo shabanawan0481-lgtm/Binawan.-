@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}{{ pg.title }} | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block narrow">
+  <h1 class="page-title">{{ pg.title }}</h1>
+  {% if pg.image %}<img class="page-img" src="{{ pg.image|img }}" alt="{{ pg.title }}">{% endif %}
+  <div class="prose">{{ pg.content|safe }}</div>
+</section>
+{% endblock %}

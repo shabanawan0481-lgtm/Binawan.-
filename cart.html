@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Your cart | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block narrow">
+  <h1 class="page-title">Your cart</h1>
+  {% if lines %}
+  <form method="post" action="{{ url_for('cart_update') }}">
+    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+    <table class="table">
+      <thead><tr><th>Perfume</th><th>Price</th><th>Qty</th><th>Total</th><th></th></tr></thead>
+      <tbody>
+      {% for l in lines %}
+      <tr>
+        <td class="ln">{% if l.p.image %}<img src="{{ l.p.image|img }}" alt="">{% endif %}<a href="{{ url_for('product', slug=l.p.slug) }}">{{ l.p.name }}</a></td>
+        <td>{{ l.p.price|money }}</td>
+        <td><input type="number" name="qty_{{ l.p.id }}" value="{{ l.qty }}" min="0" max="20" aria-label="Quantity for {{ l.p.name }}"></td>
+        <td>{{ l.total|money }}</td>
+        <td><button class="link" type="submit" formaction="{{ url_for('cart_remove', pid=l.p.id) }}">Remove</button></td>
+      </tr>{% endfor %}
+      </tbody>
+    </table>
+    <div class="summary">
+      <p><span>Subtotal</span><b>{{ subtotal|money }}</b></p>
+      <p><span>Delivery</span><b>{{ 'Free' if delivery == 0 else delivery|money }}</b></p>
+      <p class="grand"><span>Total</span><b>{{ total|money }}</b></p>
+      <div class="actions"><button class="btn ghost-dark" type="submit">Update cart</button>
+      <a class="btn gold" href="{{ url_for('checkout') }}">Checkout</a></div>
+    </div>
+  </form>
+  {% else %}<p class="empty">Your cart is empty. <a href="{{ url_for('shop') }}">Browse perfumes</a>.</p>{% endif %}
+</section>
+{% endblock %}

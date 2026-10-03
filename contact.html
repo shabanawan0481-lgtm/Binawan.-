@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Contact | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block contact">
+  <div>
+    <h1 class="page-title">Contact us</h1>
+    {% if sent %}<div class="flash ok">Message sent. We will get back to you soon.</div>
+    {% else %}
+    <form method="post" class="co-form">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      <label>Your name <input name="name" required></label>
+      <label>Email <input type="email" name="email"></label>
+      <label>Phone <input name="phone" inputmode="tel"></label>
+      <label>Message <textarea name="message" rows="5" required></textarea></label>
+      <button class="btn gold" type="submit">Send message</button>
+    </form>{% endif %}
+  </div>
+  <div class="prose">
+    <h2>Reach us directly</h2>
+    {% if S.phone %}<p>Phone: <a href="tel:{{ S.phone|replace(' ','') }}">{{ S.phone }}</a></p>{% endif %}
+    {% if S.whatsapp %}<p><a href="https://wa.me/{{ S.whatsapp }}">Message us on WhatsApp</a></p>{% endif %}
+    {% if S.email %}<p>Email: <a href="mailto:{{ S.email }}">{{ S.email }}</a></p>{% endif %}
+    <p>{{ S.address }}</p>
+  </div>
+</section>
+{% endblock %}

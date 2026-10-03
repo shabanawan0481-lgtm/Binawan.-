@@ -1,0 +1,10 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Live chat</h1>
+<p class="muted">Customers talk to the assistant first. When they tap Talk to a human, or when the assistant is off, the chat waits for you here.</p>
+<table><thead><tr><th>Visitor</th><th>Last message</th><th>Mode</th><th>Updated</th><th></th></tr></thead><tbody>
+{% for c in rows %}<tr><td>{{ c.name or 'Visitor ' ~ c.id }}{% if c.admin_unread %} <em class="badge">{{ c.admin_unread }} new</em>{% endif %}</td>
+<td>{{ (c.last_text or '')[:80] }}</td><td>{{ 'Needs a person' if c.mode=='human' else 'Assistant' }}</td><td>{{ c.updated_at[:16]|replace('T',' ') }}</td>
+<td><a href="{{ url_for('admin_chat', cid=c.id) }}">Open</a></td></tr>
+{% else %}<tr><td colspan="5">No chats yet.</td></tr>{% endfor %}</tbody></table>
+{% endblock %}

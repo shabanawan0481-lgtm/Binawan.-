@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <h1>{{ S.hero_title }}</h1>
+      <p>{{ S.hero_text }}</p>
+      <div class="actions">
+        <a class="btn gold big" href="{{ url_for('shop') }}">Shop perfumes</a>
+        {% if S.whatsapp %}<a class="btn ghost big" href="https://wa.me/{{ S.whatsapp }}">Order on WhatsApp</a>{% endif %}
+      </div>
+      <p class="hero-note">Cash on delivery across Pakistan. Free delivery. Delivered in 2 to 4 working days.</p>
+    </div>
+    <div class="hero-art">
+      {% if S.hero_image %}<img class="hero-photo" src="{{ S.hero_image|img }}" alt="{{ S.site_name }}">
+      {% else %}<div class="stage">{% include '_bottles.html' %}</div>{% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="strip">
+  <div class="wrap strip-grid">
+    <div><b>Cash on delivery</b><span>Pay when it reaches your door</span></div>
+    <div><b>Free delivery</b><span>All over Pakistan</span></div>
+    <div><b>6 to 10 hours</b><span>Long-lasting fragrances</span></div>
+    <div><b>24 hour support</b><span>Any problem, we fix it</span></div>
+  </div>
+</section>
+
+<section class="wrap block">
+  <h2>Shop by collection</h2>
+  <div class="collections">
+    {% for c in nav_categories %}
+    <a class="coll" href="{{ url_for('shop', cat=c.slug) }}" style="--h:{{ (loop.index0 * 55 + 20) }}">
+      {% if c.image %}<img src="{{ c.image|img }}" alt="" loading="lazy">{% endif %}
+      <span>{{ c.name }}</span>
+    </a>{% endfor %}
+  </div>
+</section>
+
+<section class="wrap block">
+  <div class="head-row"><h2>Best sellers</h2><a href="{{ url_for('shop') }}">See all perfumes</a></div>
+  <div class="grid">{% for p in featured %}{% include '_card.html' %}{% endfor %}</div>
+</section>
+
+<section class="wrap block quizbar">
+  <div><h2>Not sure which perfume to pick?</h2><p>Answer three quick questions and we will match you with a fragrance. Or ask our chat assistant.</p></div>
+  <a class="btn gold big" href="{{ url_for('find_scent') }}">Find your scent</a>
+</section>
+
+<section class="steps-sec">
+  <div class="wrap">
+    <h2>How ordering works</h2>
+    <ol class="how">
+      <li><b>Choose your perfume</b><span>Pick from men, women and gift sets.</span></li>
+      <li><b>Place the order</b><span>Cash on delivery, or pay by bank or JazzCash and upload the receipt.</span></li>
+      <li><b>We call to confirm</b><span>You also get an email and a tracking number.</span></li>
+      <li><b>Receive at your door</b><span>Track the parcel any time with your order number.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="wrap block cta">
+  <div>
+    <h2>Already ordered?</h2>
+    <p>Enter your order number and phone number to see where your parcel is, with the courier tracking ID once it ships.</p>
+  </div>
+  <a class="btn gold big" href="{{ url_for('track') }}">Track your order</a>
+</section>
+
+{% if faq %}
+<section class="wrap block narrow">
+  <h2>Questions before you order</h2>
+  <div class="prose">{{ faq.content|safe }}</div>
+</section>
+{% endif %}
+{% endblock %}

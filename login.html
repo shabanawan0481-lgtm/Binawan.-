@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin login</title><link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}"></head>
+<body class="login">
+<form method="post" class="box">
+  <h1>{{ S.site_name }} admin</h1>
+  {% with msgs = get_flashed_messages(with_categories=true) %}{% for c, m in msgs %}<div class="flash {{ c }}">{{ m }}</div>{% endfor %}{% endwith %}
+  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+  <label>Username <input name="username" autocomplete="username" required autofocus></label>
+  <label>Password <input type="password" name="password" autocomplete="current-password" required></label>
+  <button class="btn" type="submit">Log in</button>
+</form></body></html>

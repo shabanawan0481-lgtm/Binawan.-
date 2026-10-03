@@ -1,0 +1,23 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="head"><h1>{{ chat.name or 'Visitor ' ~ chat.id }}</h1><a href="{{ url_for('admin_chats') }}">All chats</a></div>
+<div class="panel chatbox" id="thread">
+  {% for m in msgs %}<div class="bub {{ m.role }}" data-id="{{ m.id }}">{{ m.text }}</div>{% endfor %}
+</div>
+<form method="post" class="chatreply">
+  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+  <textarea name="message" rows="2" placeholder="Type your reply to the customer" required></textarea>
+  <button class="btn" name="action" value="reply">Send reply</button>
+</form>
+<form method="post" class="inline">
+  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+  {% if chat.mode == 'human' %}<button class="link" name="action" value="ai">Hand this chat back to the assistant</button>{% endif %}
+  <button class="link danger" name="action" value="delete" onclick="return confirm('Delete this chat?')">Delete chat</button>
+</form>
+<script>
+(function(){var t=document.getElementById('thread');t.scrollTop=t.scrollHeight;
+var last=Math.max.apply(null,[0].concat([].map.call(t.querySelectorAll('.bub'),function(b){return +b.dataset.id})));
+setInterval(function(){fetch('{{ url_for("admin_chat_json", cid=chat.id) }}?after='+last).then(function(r){return r.json()}).then(function(d){
+d.messages.forEach(function(m){var b=document.createElement('div');b.className='bub '+m.role;b.dataset.id=m.id;b.textContent=m.text;t.appendChild(b);last=m.id;t.scrollTop=t.scrollHeight;});});},5000);})();
+</script>
+{% endblock %}

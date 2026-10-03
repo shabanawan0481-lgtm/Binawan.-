@@ -1,0 +1,15 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h1>Orders</h1>
+<form class="bar" method="get">
+  <input name="q" value="{{ q }}" placeholder="Search order, name, phone">
+  <select name="status" onchange="this.form.submit()"><option value="">All statuses</option>
+  {% for s in ORDER_STATUSES %}<option value="{{ s }}" {{ 'selected' if s==status }}>{{ s|capitalize }}</option>{% endfor %}</select>
+  <button class="btn">Search</button>
+</form>
+<table><thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>City</th><th>Payment</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>
+{% for o in rows %}<tr><td>{{ o.code }}</td><td>{{ o.created_at[:16]|replace('T',' ') }}</td><td>{{ o.name }}<br><small>{{ o.phone }}</small></td><td>{{ o.city }}</td>
+<td>{{ o.payment_method|upper }}<br><small>{{ o.payment_status }}</small></td><td>{{ o.total|money }}</td>
+<td><span class="pill {{ o.status }}">{{ o.status }}</span></td><td><a href="{{ url_for('admin_order', oid=o.id) }}">Open</a></td></tr>
+{% else %}<tr><td colspan="8">No orders found.</td></tr>{% endfor %}</tbody></table>
+{% endblock %}

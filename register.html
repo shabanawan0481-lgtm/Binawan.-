@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Create account | {{ S.site_name }}{% endblock %}
+{% block content %}
+<section class="wrap block auth">
+  <h1 class="page-title">Create your account</h1>
+  <p class="muted">See your orders, follow your parcels and check out faster.</p>
+  {% include 'account/_form_errors.html' %}
+  <form method="post" class="co-form">
+    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+    <label>Full name <input name="name" value="{{ form.get('name','') }}" required autocomplete="name"></label>
+    <label>Email <input type="email" name="email" value="{{ form.get('email','') }}" required autocomplete="email"></label>
+    <label>Phone <input name="phone" value="{{ form.get('phone','') }}" required inputmode="tel" autocomplete="tel"></label>
+    <label>Password (8+ characters) <input type="password" name="password" required autocomplete="new-password"></label>
+    <button class="btn gold wide" type="submit">Create account</button>
+  </form>
+  <p class="muted">Already have an account? <a href="{{ url_for('account_login') }}">Log in</a></p>
+</section>
+{% endblock %}
